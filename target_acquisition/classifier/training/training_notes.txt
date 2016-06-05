@@ -45,5 +45,6 @@
     opencv_traincascade -vec training/vectors/acid3.vec -data training/classifiers/acid7 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.35 -numStages 12 -mode ALL -numPos 2000 -numNeg 3000 -w 40 -h 40 -precalcValBufSize 1024 -precalcIdxBufSize 1024
 
     NOTE:
+    Stage 9: 9hrs - Stage 9 acceptance ratio 8.1e-06. Working on test images!
 
 
