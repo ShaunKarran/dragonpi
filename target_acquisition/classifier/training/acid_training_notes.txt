@@ -1,0 +1,50 @@
+1st attempt:
+    opencv_createsamples -vec training/vectors/acid.vec -img data/test_positives/acid.png -bg negatives.txt -bgthresh 0 -w 40 -h 40
+    opencv_traincascade -data classifier -vec acid.vec -bg negatives.txt -numStages 5 -minHitRate 0.999 -maxFalseAlarmRate 0.5 -numPos 500 -numNeg 3000 -w 40 -h 40 -mode ALL -precalcValBufSize 4096 -precalcIdxBufSize 4096
+
+    NOTE:
+    Stage 2: Required leaf false alarm rate achieved. Branch training terminated.
+
+2nd attempt:
+    opencv_createsamples -vec training/vectors/acid2.vec -num 1500 -img positives/acid.png -bg random_negatives.txt -bgthresh 0 -w 50 -h 50 -show
+    opencv_traincascade -vec training/vectors/acid2.vec -data training/classifiers/acid2 -bg random_negatives.txt -numStages 10 -numPos 1000 -numNeg 600 -w 50 -h 50 -precalcValBufSize 1024 -precalcIdxBufSize 1024
+
+    NOTE:
+    Stage 5: 1hrs - ?
+
+3rd attempt:
+    opencv_createsamples -vec training/vectors/acid3.vec -num 2500 -img positives/acid.png -bg random_negatives.txt -bgthresh 0 -w 40 -h 40 -show
+    opencv_traincascade -vec training/vectors/acid3.vec -data training/classifiers/acid3 -bg random_negatives.txt -numStages 10 -numPos 2000 -numNeg 1000 -w 40 -h 40 -precalcValBufSize 1024 -precalcIdxBufSize 1024
+
+    NOTE:
+    Stage 4: 1hr - Required leaf false alarm rate achieved. Branch training terminated.
+
+4th attempt:
+    opencv_createsamples -vec training/vectors/acid3.vec -num 2500 -img positives/acid.png -bg random_negatives.txt -bgthresh 0 -w 40 -h 40 -show
+    opencv_traincascade -vec training/vectors/acid3.vec -data training/classifiers/acid4 -bg random_negatives.txt -numStages 10 -mode ALL -numPos 1500 -numNeg 3000 -w 40 -h 40 -precalcValBufSize 1024 -precalcIdxBufSize 1024
+
+    NOTE:
+    Stage 6: 4hrs - Best so far. Only a handful of false positives.
+
+5th attempt:
+    opencv_createsamples -vec training/vectors/acid3.vec -num 2500 -img positives/acid.png -bg random_negatives.txt -bgthresh 0 -w 40 -h 40 -show
+    opencv_traincascade -vec training/vectors/acid3.vec -data training/classifiers/acid5 -bg random_negatives.txt -minHitRate 0.9995 -numStages 10 -mode ALL -numPos 1500 -numNeg 3000 -w 40 -h 40 -precalcValBufSize 1024 -precalcIdxBufSize 1024
+
+    NOTE:
+    Stage 7: 5hrs - Not as good as acid4. More false positives.
+
+6th attempt:
+    opencv_createsamples -vec training/vectors/acid3.vec -num 2500 -img positives/acid.png -bg random_negatives.txt -bgthresh 0 -w 40 -h 40 -show
+    opencv_traincascade -vec training/vectors/acid3.vec -data training/classifiers/acid6 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.1 -numStages 12 -mode ALL -numPos 2000 -numNeg 3000 -w 40 -h 40 -precalcValBufSize 1024 -precalcIdxBufSize 1024
+
+    NOTE:
+    Stage 4: 7rs - Stopped manually. I think maxFalseAlarmRate is too low.
+
+7th attempt:
+    opencv_createsamples -vec training/vectors/acid3.vec -num 2500 -img positives/acid.png -bg random_negatives.txt -bgthresh 0 -w 40 -h 40 -show
+    opencv_traincascade -vec training/vectors/acid3.vec -data training/classifiers/acid7 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.35 -numStages 12 -mode ALL -numPos 2000 -numNeg 3000 -w 40 -h 40 -precalcValBufSize 1024 -precalcIdxBufSize 1024
+
+    NOTE:
+    Stage 9: 9hrs - Stage 9 acceptance ratio 8.1e-06. Working on test images!
+
+

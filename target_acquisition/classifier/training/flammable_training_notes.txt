@@ -1,0 +1,10 @@
+1st attempt:
+    opencv_createsamples -vec training/vectors/flammable.vec -num 2500 -img positives/flammable.png -bg random_negatives.txt -bgthresh 0 -w 60 -h 60 -show
+    opencv_traincascade -vec training/vectors/flammable.vec -data training/classifiers/flammable1 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.35 -numStages 12 -mode ALL -numPos 2000 -numNeg 3000 -w 60 -h 60 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/flammable1/log.txt &
+
+    NOTE:
+        Reasonable results. Seems to just detect the bottom section of target in some cases. No noticable false positives.
+        Next test with -w 40 -h 40.
+        Create samples allowing full rotation of image for side/upside down detection.
+
+
