@@ -4,6 +4,9 @@ import os
 import sys
 import time
 
+# Coloured print statements
+from termcolor import colored
+
 # OpenCV
 import cv2
 import imutils
@@ -32,38 +35,6 @@ expected_results = {
 }
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
-def test_cascades_on_image(image, cascades, expected_results):
-    """
-    Apply the cascades to the image and compare the results to the expected results.
-
-    image: An opencv image.
-    cascades: A dictionary containing (cascade_name: cascade) pairs.
-    expected_results: A dictionary containing (cascade_name: result) pairs where result is the number of results
-        the cascade should return from detectMultiScale().
-
-    return: A bool representing whether the test passed or failed to match the expected results.
-    """
-    test_result = True
-
-    for cascade_name, cascade in cascades.iteritems():
-        results = cascade.detectMultiScale(image)
-        if len(results) != expected_results[cascade_name]:
-            test_result = False
-
-    return test_result
-
-
 def main(args):
     """Main."""
     start_time = time.time()
@@ -75,7 +46,7 @@ def main(args):
         cascades[file_name[:-4]] = cv2.CascadeClassifier(os.path.join('./classifiers', file_name))
     print ""
 
-    number_passed = 0
+    num_passed = 0
     for file_name in os.listdir('./images'):
         image = cv2.imread(os.path.join('./images', file_name))
         image = imutils.resize(image, width=args.resize_width)
@@ -83,16 +54,17 @@ def main(args):
         # Create a copy here so that the image exist and can be written even when no targets are found.
         image_highlighted = image.copy()
 
-        test_result = test_cascades_on_image(image, cascades, expected_results[file_name])
-        print '{:.0f}ms: Test for {} '.format((time.time() - start_time) * 1000, file_name),
-        if test_result:
-            print bcolors.OKGREEN + "PASSED" + bcolors.ENDC
-            number_passed += 1
-        else:
-            print bcolors.FAIL + "FAILED" + bcolors.ENDC
-
+        false_positive = False
+        false_negative = False
+        print '{:.0f}ms: Testing {} -'.format((time.time() - start_time) * 1000, file_name),
         for cascade_name, cascade in cascades.iteritems():
             results = cascade.detectMultiScale(image)
+
+            if len(results) > expected_results[file_name][cascade_name]:
+                false_positive = True
+            elif len(results) < expected_results[file_name][cascade_name]:
+                false_negative = True
+
             for (x, y, w, h) in results:
                 image_highlighted = cv2.rectangle(image_highlighted, (x, y), (x + w, y + h), (255, 0, 0), 2)
                 cv2.putText(img=image_highlighted,
@@ -103,9 +75,19 @@ def main(args):
                             color=(0, 0, 255),
                             thickness=2)
 
+        if false_positive or false_negative:
+            print colored('FAILED -', 'red'),
+            if false_positive:
+                print colored('False positive', 'red')
+            if false_negative:
+                print colored('False negative', 'yellow')
+        else:
+            print colored('PASSED', 'green')
+            num_passed += 1
+
         cv2.imwrite(os.path.join('./output', file_name), image_highlighted)
 
-    print '\nTesting complete. {} out of {} passed.'.format(number_passed, len(os.listdir('./images')))
+    print '\nTesting complete. {} out of {} passed.'.format(num_passed, len(os.listdir('./images')))
 
 
 if __name__ == '__main__':
