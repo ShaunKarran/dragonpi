@@ -8,16 +8,14 @@ import time
 
 # OpenCV
 import cv2
-
 # Ros libs
 import rospy
-
+from cv_bridge import CvBridge, CvBridgeError
 # Ros messages
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
 
 
-class Image_Writer:
+class ImageWriter:
     """Class to convert images from the 'images' topic to openCV format and write them to file."""
 
     def __init__(self, file_name, format, output_path):
@@ -54,7 +52,7 @@ class Image_Writer:
 
 def main(args):
     """Initialize and cleanup ros node."""
-    image_writer = Image_Writer(args.file_name, args.format, args.output_path)
+    image_writer = ImageWriter(args.file_name, args.format, args.output_path)
     rospy.init_node('image_writer', anonymous=True)
     try:
         rospy.spin()
