@@ -1,5 +1,5 @@
 # Dragonpi
-target_acquisition/classifier/testing/output/
+target_acquisition/classifier/testing/output
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
