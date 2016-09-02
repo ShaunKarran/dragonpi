@@ -11,37 +11,37 @@ import cv2
 import imutils
 
 expected_results = {
-    "image_00.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_01.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_02.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_03.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_04.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_05.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_06.jpg": {"acid": 0, "misc": 0, "flammable": 1},
-    "image_07.jpg": {"acid": 0, "misc": 0, "flammable": 1},
-    "image_08.jpg": {"acid": 0, "misc": 0, "flammable": 1},
-    "image_09.jpg": {"acid": 0, "misc": 0, "flammable": 1},
-    "image_10.jpg": {"acid": 0, "misc": 1, "flammable": 0},
-    "image_11.jpg": {"acid": 0, "misc": 1, "flammable": 0},
-    "image_12.jpg": {"acid": 0, "misc": 1, "flammable": 0},
-    "image_13.jpg": {"acid": 0, "misc": 1, "flammable": 1},
-    "image_14.jpg": {"acid": 1, "misc": 1, "flammable": 0},
-    "image_15.jpg": {"acid": 1, "misc": 1, "flammable": 1},
-    "image_16.jpg": {"acid": 1, "misc": 0, "flammable": 1},
-    "image_17.jpg": {"acid": 0, "misc": 0, "flammable": 1},
-    "image_18.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_19.jpg": {"acid": 0, "misc": 1, "flammable": 0},
-    "image_20.jpg": {"acid": 0, "misc": 1, "flammable": 1},
-    "image_21.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_22.jpg": {"acid": 1, "misc": 0, "flammable": 0},
-    "image_23.jpg": {"acid": 0, "misc": 0, "flammable": 0},
-    "image_24.jpg": {"acid": 0, "misc": 0, "flammable": 0},
-    "image_25.jpg": {"acid": 0, "misc": 0, "flammable": 0},
-    "image_26.jpg": {"acid": 0, "misc": 0, "flammable": 0},
-    "image_27.jpg": {"acid": 0, "misc": 0, "flammable": 0},
-    "image_28.jpg": {"acid": 0, "misc": 0, "flammable": 0},
-    "image_29.jpg": {"acid": 0, "misc": 0, "flammable": 0},
-    "image_30.jpg": {"acid": 0, "misc": 0, "flammable": 0}
+    "image_00.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_01.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_02.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_03.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_04.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_05.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_06.jpg": {"acid": 0, "flammable": 1, "misc": 0},
+    "image_07.jpg": {"acid": 0, "flammable": 1, "misc": 0},
+    "image_08.jpg": {"acid": 0, "flammable": 1, "misc": 0},
+    "image_09.jpg": {"acid": 0, "flammable": 1, "misc": 0},
+    "image_10.jpg": {"acid": 0, "flammable": 0, "misc": 1},
+    "image_11.jpg": {"acid": 0, "flammable": 0, "misc": 1},
+    "image_12.jpg": {"acid": 0, "flammable": 0, "misc": 1},
+    "image_13.jpg": {"acid": 0, "flammable": 1, "misc": 1},
+    "image_14.jpg": {"acid": 1, "flammable": 0, "misc": 1},
+    "image_15.jpg": {"acid": 1, "flammable": 1, "misc": 1},
+    "image_16.jpg": {"acid": 1, "flammable": 1, "misc": 0},
+    "image_17.jpg": {"acid": 0, "flammable": 1, "misc": 0},
+    "image_18.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_19.jpg": {"acid": 0, "flammable": 0, "misc": 1},
+    "image_20.jpg": {"acid": 0, "flammable": 1, "misc": 1},
+    "image_21.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_22.jpg": {"acid": 1, "flammable": 0, "misc": 0},
+    "image_23.jpg": {"acid": 0, "flammable": 0, "misc": 0},
+    "image_24.jpg": {"acid": 0, "flammable": 0, "misc": 0},
+    "image_25.jpg": {"acid": 0, "flammable": 0, "misc": 0},
+    "image_26.jpg": {"acid": 0, "flammable": 0, "misc": 0},
+    "image_27.jpg": {"acid": 0, "flammable": 0, "misc": 0},
+    "image_28.jpg": {"acid": 0, "flammable": 0, "misc": 0},
+    "image_29.jpg": {"acid": 0, "flammable": 0, "misc": 0},
+    "image_30.jpg": {"acid": 0, "flammable": 0, "misc": 0}
 }
 
 
@@ -49,7 +49,9 @@ def main(args):
     """Main."""
     print 'Testing:\t',
     cascades = {}
-    for file_name in os.listdir('./classifiers'):
+    # The following line is to ignore hidden files such as .DS_Store
+    file_names = sorted([file_name for file_name in os.listdir('./classifiers') if '.' not in file_name[0]])
+    for file_name in file_names:
         print '{}\t'.format(file_name),
         cascades[file_name[:-4]] = cv2.CascadeClassifier(os.path.join('./classifiers', file_name))
     print ""  # New line.
@@ -69,7 +71,7 @@ def main(args):
         image_highlighted = image.copy()
 
         print '{}\t'.format(file_name),
-        for cascade_name, cascade in cascades.iteritems():
+        for cascade_name, cascade in sorted(cascades.iteritems()):
             results = cascade.detectMultiScale(image)
 
             if len(results) > expected_results[file_name][cascade_name]:
@@ -97,7 +99,7 @@ def main(args):
         cv2.imwrite(os.path.join('./output', file_name), image_highlighted)
 
     print "\nAccuracy\t",
-    for cascade_name, _ in cascades.iteritems():
+    for cascade_name, _ in sorted(cascades.iteritems()):
         print "{:.1f}%\t\t".format(number_detected_positives[cascade_name] / number_positives[cascade_name] * 100),
 
 
