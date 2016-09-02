@@ -58,3 +58,6 @@
     opencv_traincascade -vec training/vectors/flammable3.vec -data training/classifiers/flammable7 -bg random_negatives.txt -minHitRate 0.95 -maxFalseAlarmRate 0.3 -numStages 12 -mode ALL -numPos 4000 -numNeg 3000 -w 40 -h 40 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/flammable7/log.txt &
 
     NOTE:
+        Stopped at stage 8.
+        Tested (300px): 44% -- FAILED
+        Tested (1000px): 100% -- PASSED
