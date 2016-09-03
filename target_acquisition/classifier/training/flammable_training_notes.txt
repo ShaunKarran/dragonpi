@@ -6,14 +6,14 @@
         Reasonable results. Seems to just detect the bottom section of target in some cases. No noticable false positives.
         Next test with -w 40 -h 40.
         Create samples allowing full rotation of image for side/upside down detection.
-        Tested (450px): 44%
+        Tested (450px): 44% -- FAILED
 
 2nd attempt:
     opencv_createsamples -vec training/vectors/flammable2.vec -num 2500 -img positives/flammable.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 50 -h 50 -show
     opencv_traincascade -vec training/vectors/flammable2.vec -data training/classifiers/flammable2 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.3 -numStages 12 -mode ALL -numPos 2000 -numNeg 3000 -w 50 -h 50 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/flammable2/log.txt &
 
     NOTE:
-        Tested (450px): 11%
+        Tested (450px): 11% -- FAILED
 
 3rd attempt:
     opencv_createsamples -vec training/vectors/flammable2.vec -num 2500 -img positives/flammable.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 50 -h 50 -show
@@ -21,7 +21,7 @@
 
     NOTE:
 	   Havent tested yet. Stopped stage 7 (1 stage before 2nd attempt).
-       Tested (450px): 100% - FALSE POSITIVE (2)
+       Tested (450px): 100% -- FALSE POSITIVE (2)
 
 4th attempt:
     opencv_createsamples -vec training/vectors/flammable2.vec -num 2500 -img positives/flammable.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 50 -h 50 -show
@@ -29,7 +29,7 @@
 
     NOTE:
 	   Stopped at stage 7.
-       Tested (450px): 89% - FALSE POSITIVE (2)
+       Tested (450px): 89% -- FALSE POSITIVE (2)
 
 5th attempt:
     opencv_createsamples -vec training/vectors/flammable2.vec -num 2500 -img positives/flammable.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 50 -h 50 -show
