@@ -12,7 +12,6 @@ import imutils
 
 expected_results = {
     "image_00.jpg": {"acid": 1, "flammable": 0, "misc": 0},
-    "image_01.jpg": {"acid": 1, "flammable": 0, "misc": 0},
     "image_02.jpg": {"acid": 1, "flammable": 0, "misc": 0},
     "image_03.jpg": {"acid": 1, "flammable": 0, "misc": 0},
     "image_04.jpg": {"acid": 1, "flammable": 0, "misc": 0},
