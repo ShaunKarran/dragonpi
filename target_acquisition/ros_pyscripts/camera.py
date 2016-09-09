@@ -50,7 +50,7 @@ class Camera:
         except CvBridgeError as e:
             print(e)
 
-            return EmptyResponse()
+        return EmptyResponse()
 
 
 def main():

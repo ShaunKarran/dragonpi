@@ -24,6 +24,7 @@ class ImageProcessor:
         self.resize_width = resize_width
         self.cascades = {}
         for classifer in classifiers:
+            rospy.loginfo("Loading {}".format(classifer))
             self.cascades[classifer] = cv2.CascadeClassifier(classifer)
 
         self.bridge = CvBridge()
@@ -46,7 +47,7 @@ class ImageProcessor:
             print(e)
 
         if args.resize_width:
-            rospy.loginfo("Resizing image.")
+            rospy.loginfo("Resizing image to width {}".format(self.resize_width))
             cv_image = imutils.resize(cv_image, width=self.resize_width)
 
         targets_detected = {}
