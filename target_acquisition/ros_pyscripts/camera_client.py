@@ -1,5 +1,5 @@
 import rospy
-from std_srvs.srv import Empty, Trigger
+from std_srvs.srv import Empty
 
 
 def camera_client():

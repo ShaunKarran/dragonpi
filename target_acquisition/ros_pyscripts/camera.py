@@ -7,7 +7,6 @@ from cv_bridge import CvBridge, CvBridgeError
 from picamera import PiCamera, PiCameraError
 from picamera.array import PiRGBArray
 from sensor_msgs.msg import Image
-
 from std_srvs.srv import Empty, EmptyResponse
 
 
@@ -31,8 +30,6 @@ class Camera:
             rospy.loginfo("Cannot Initialise picamera.")
 
         self.bridge = CvBridge()
-
-        # self.subscriber = rospy.Subscriber('shutter', Bool, self.callback, queue_size=1)
         self.publisher = rospy.Publisher('images', Image, queue_size=5)
 
     def callback(self, req):
@@ -42,7 +39,7 @@ class Camera:
         Takes an image using the Raspberry Pi Camera and publishes it.
         """
         rospy.loginfo("Capturing image.")
-	self.rawCapture.truncate(0)
+        self.rawCapture.truncate(0)
         self.camera.capture(self.rawCapture, format='bgr')
         cv2_image = self.rawCapture.array
 
@@ -53,7 +50,7 @@ class Camera:
         except CvBridgeError as e:
             print(e)
 
-	return EmptyResponse()
+            return EmptyResponse()
 
 
 def main():
@@ -62,7 +59,7 @@ def main():
     rospy.init_node('image_capture', anonymous=False)
     s = rospy.Service('take_photo', Empty, image_capture.callback)
     try:
-	print "Camera node running."
+        print "Camera node running."
         rospy.spin()
     except KeyboardInterrupt:
         print "Shutting down ROS Camera module."
