@@ -1,14 +1,12 @@
 import rospy
-
-
-# from beginner_tutorials.srv import *
+from std_srvs.srv import Empty, Trigger
 
 
 def camera_client():
     print "Taking Photo."
     rospy.wait_for_service('take_photo')
     try:
-        take_photo = rospy.ServiceProxy('take_photo', None)
+        take_photo = rospy.ServiceProxy('take_photo', Empty)
         take_photo()
     except rospy.ServiceException, e:
         print "Service call failed: {}".format(e)
