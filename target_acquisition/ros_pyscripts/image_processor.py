@@ -22,9 +22,9 @@ class ImageProcessor:
     def __init__(self, classifiers, resize_width):
         """Initialise ros publisher and subscriber and read the classifiers."""
         self.resize_width = resize_width
-        self.cascade = {}
+        self.cascades = {}
         for classifer in classifiers:
-            self.cascade[classifer] = cv2.CascadeClassifier(classifer)
+            self.cascades[classifer] = cv2.CascadeClassifier(classifer)
 
         self.bridge = CvBridge()
 
