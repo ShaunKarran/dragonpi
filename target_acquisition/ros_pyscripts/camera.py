@@ -7,10 +7,10 @@ from cv_bridge import CvBridge, CvBridgeError
 from picamera import PiCamera, PiCameraError
 from picamera.array import PiRGBArray
 from sensor_msgs.msg import Image
-from std_msgs.msg import Bool
+from std_srvs.srv import Empty, EmptyResponse
 
 
-class ImageCapture:
+class Camera:
     """
     Class containing a ros publisher and subscirber.
 
@@ -30,17 +30,16 @@ class ImageCapture:
             rospy.loginfo("Cannot Initialise picamera.")
 
         self.bridge = CvBridge()
-
-        self.subscriber = rospy.Subscriber('shutter', Bool, self.callback, queue_size=1)
         self.publisher = rospy.Publisher('images', Image, queue_size=5)
 
-    def callback(self, ros_data):
+    def callback(self, req):
         """
         Callback function that is called when a message is recieved by the subscriber.
 
         Takes an image using the Raspberry Pi Camera and publishes it.
         """
         rospy.loginfo("Capturing image.")
+        self.rawCapture.truncate(0)
         self.camera.capture(self.rawCapture, format='bgr')
         cv2_image = self.rawCapture.array
 
@@ -51,15 +50,19 @@ class ImageCapture:
         except CvBridgeError as e:
             print(e)
 
+        return EmptyResponse()
+
 
 def main():
     """Initialize and cleanup ros node."""
-    image_capture = ImageCapture()
+    image_capture = Camera()
     rospy.init_node('image_capture', anonymous=False)
+    s = rospy.Service('take_photo', Empty, image_capture.callback)
     try:
+        print "Camera node running."
         rospy.spin()
     except KeyboardInterrupt:
-        print "Shutting down ROS ImageCapture module."
+        print "Shutting down ROS Camera module."
 
 
 if __name__ == '__main__':

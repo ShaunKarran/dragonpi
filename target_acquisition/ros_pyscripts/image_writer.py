@@ -27,6 +27,7 @@ class ImageWriter:
 
         self.bridge = CvBridge()
         self.subscriber = rospy.Subscriber("images", Image, self.callback, queue_size=5)
+        # self.highlighted_image_subscriber = rospy.Subscriber("highlighted_images", Image, self.callback, queue_size=5)
 
     def callback(self, ros_data):
         """
