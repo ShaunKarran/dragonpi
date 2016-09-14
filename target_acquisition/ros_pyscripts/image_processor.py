@@ -30,7 +30,7 @@ class ImageProcessor:
         self.bridge = CvBridge()
 
         self.subscriber = rospy.Subscriber('images', Image, self.callback, queue_size=5)
-        self.image_publisher = rospy.Publisher('images', Image, queue_size=5)
+        self.image_publisher = rospy.Publisher('processed_images', Image, queue_size=5)
         # self.results_publisher = rospy.Publisher('processor_results', ProcessorResults, queue_size=5)
 
     def callback(self, ros_data):
@@ -83,6 +83,7 @@ def main(args):
     image_processor = ImageProcessor(args.classifiers, args.resize_width)
     rospy.init_node('image_processor', anonymous=False)
     try:
+        rospy.loginfo("Image Processor node running.")
         rospy.spin()
     except KeyboardInterrupt:
         print "Shutting down ROS Image processor module."

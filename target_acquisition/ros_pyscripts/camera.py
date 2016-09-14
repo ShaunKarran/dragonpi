@@ -57,9 +57,9 @@ def main():
     """Initialize and cleanup ros node."""
     image_capture = Camera()
     rospy.init_node('image_capture', anonymous=False)
-    s = rospy.Service('take_photo', Empty, image_capture.callback)
+    rospy.Service('take_photo', Empty, image_capture.callback)
     try:
-        print "Camera node running."
+        rospy.loginfo("Camera node running.")
         rospy.spin()
     except KeyboardInterrupt:
         print "Shutting down ROS Camera module."

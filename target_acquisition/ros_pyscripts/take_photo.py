@@ -2,8 +2,8 @@ import rospy
 from std_srvs.srv import Empty
 
 
-def camera_client():
-    print "Taking Photo."
+def take_photo():
+    rospy.loginfo("Taking photo.")
     rospy.wait_for_service('take_photo')
     try:
         take_photo = rospy.ServiceProxy('take_photo', Empty)
@@ -13,4 +13,4 @@ def camera_client():
 
 
 if __name__ == '__main__':
-    camera_client()
+    take_photo()
