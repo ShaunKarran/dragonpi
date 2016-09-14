@@ -21,7 +21,7 @@ class ImageWriter:
     def __init__(self, topic_name, file_name, format, output_path):
         """Initialise member variables and create ros subscriber."""
         self.file_name = file_name
-        self.format = '.' + format
+        self.format = format
         self.output_path = output_path
         self.number_written = 0
 
