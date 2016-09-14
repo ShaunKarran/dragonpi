@@ -53,7 +53,7 @@ class ImageWriter:
 
 def main(args):
     """Initialize and cleanup ros node."""
-    image_writer = ImageWriter(args.file_name, args.format, args.output_path)
+    image_writer = ImageWriter(args.topic_name, args.file_name, args.format, args.output_path)
     rospy.init_node('image_writer', anonymous=True)
     try:
         rospy.loginfo("Image Writer node running.")
