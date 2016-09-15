@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from time import sleep
 
 import rospy
@@ -54,8 +52,8 @@ class Camera:
 
 def main():
     """Initialize and cleanup ros node."""
-    image_capture = Camera()
-    rospy.init_node('image_capture', anonymous=False)
+    camera = Camera()
+    rospy.init_node('camera', anonymous=False)
     try:
         rospy.loginfo("Camera node running.")
         rospy.spin()

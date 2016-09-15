@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import argparse
 import sys
 
@@ -7,7 +5,6 @@ import cv2
 import imutils
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
-# from my_msgs import ProcessorResults
 from sensor_msgs.msg import Image
 from std_msgs.msg import Bool
 
@@ -49,12 +46,12 @@ class ImageProcessor:
             print(e)
 
         if args.resize_width:
-            rospy.loginfo("Resizing image to width {}".format(self.resize_width))
+            rospy.loginfo("Resizing image to width: {}px".format(self.resize_width))
             cv_image = imutils.resize(cv_image, width=self.resize_width)
 
         targets_detected = {}
         for cascade_name, cascade in self.cascades.iteritems():
-            rospy.loginfo("Running algorithm for target {}".format(cascade_name))
+            rospy.loginfo("Running detection for {}".format(cascade_name))
             targets_detected[cascade_name] = cascade.detectMultiScale(cv_image)
 
         # Draw bounding box around targets in image.
@@ -69,7 +66,7 @@ class ImageProcessor:
                             color=(0, 0, 255),
                             thickness=2)
 
-        rospy.loginfo("Processing Complete.")
+        rospy.loginfo("Processing complete.")
         self.complete_publisher.publish(False)
 
         rospy.loginfo("Publishing highlighted image.")
@@ -96,7 +93,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-c', '--classifiers', nargs='*', required=True)
-    parser.add_argument('-r', '--resize-width', type=int)
+    parser.add_argument('-r', '--resize-width', type=int, required=True)
 
     args = parser.parse_args(sys.argv[1:])
     main(args)

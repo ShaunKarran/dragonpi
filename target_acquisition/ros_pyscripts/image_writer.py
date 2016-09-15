@@ -1,17 +1,10 @@
-#!/usr/bin/env python
-
-# Python libs
 import argparse
 import os
 import sys
-import time
 
-# OpenCV
 import cv2
-# Ros libs
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
-# Ros messages
 from sensor_msgs.msg import Image
 
 
@@ -26,7 +19,7 @@ class ImageWriter:
         self.number_written = 0
 
         self.bridge = CvBridge()
-        self.subscriber = rospy.Subscriber(topic_name, Image, self.callback, queue_size=5)
+        self.subscriber = rospy.Subscriber(topic_name, Image, self.callback, queue_size=1)
 
     def callback(self, ros_data):
         """
@@ -34,21 +27,17 @@ class ImageWriter:
 
         Converts the image to openCV format using cv_brige and writes to file.
         """
-        start_time = time.time()
-
-        rospy.loginfo('{:.2f}s: Converting from ros image to opencv image.'.format(time.time() - start_time))
+        rospy.loginfo('Converting from ros image to opencv image.')
         try:
             cv_image = self.bridge.imgmsg_to_cv2(ros_data, "bgr8")
         except CvBridgeError as e:
             print(e)
 
-        image_name = os.path.join(self.output_path,
-                                  ("{}_{}.{}".format(self.file_name, str(self.number_written), self.format)))
-        rospy.loginfo('{:.2f}s: Writing image {}.'.format(time.time() - start_time, image_name))
-        cv2.imwrite(image_name, cv_image)
+        image_name = "{}_{}.{}".format(self.file_name, str(self.number_written), self.format)
+        rospy.loginfo('Writing {} to {}.'.format(image_name, self.output_path))
+        cv2.imwrite(os.path.join(self.output_path, image_name), cv_image)
         self.number_written += 1
-
-        rospy.loginfo('{:.2f}s: Finished.'.format(time.time() - start_time))
+        rospy.loginfo('Image successfully written.')
 
 
 def main(args):
