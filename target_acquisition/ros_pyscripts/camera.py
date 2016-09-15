@@ -7,7 +7,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from picamera import PiCamera, PiCameraError
 from picamera.array import PiRGBArray
 from sensor_msgs.msg import Image
-from std_srvs.srv import Empty, EmptyResponse
+from std_msgs.msg import Empty
 
 
 class Camera:
@@ -30,7 +30,8 @@ class Camera:
             rospy.loginfo("Cannot Initialise picamera.")
 
         self.bridge = CvBridge()
-        self.publisher = rospy.Publisher('images', Image, queue_size=5)
+        self.subscriber = rospy.Subscriber('take_photo', Empty, self.callback, queue_size=1)
+        self.publisher = rospy.Publisher('images', Image, queue_size=1)
 
     def callback(self, req):
         """
@@ -50,14 +51,11 @@ class Camera:
         except CvBridgeError as e:
             print(e)
 
-        return EmptyResponse()
-
 
 def main():
     """Initialize and cleanup ros node."""
     image_capture = Camera()
     rospy.init_node('image_capture', anonymous=False)
-    rospy.Service('take_photo', Empty, image_capture.callback)
     try:
         rospy.loginfo("Camera node running.")
         rospy.spin()
