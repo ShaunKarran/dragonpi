@@ -30,7 +30,7 @@ class Camera:
             rospy.loginfo("Cannot Initialise picamera.")
 
         self.bridge = CvBridge()
-        self.subscriber = rospy.Subscriber('take_photo', Empty, self.callback, queue_size=1)
+        self.subscriber = rospy.Subscriber('take_image', Empty, self.callback, queue_size=1)
         self.publisher = rospy.Publisher('images', Image, queue_size=1)
 
     def callback(self, req):

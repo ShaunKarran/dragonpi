@@ -9,6 +9,7 @@ import rospy
 from cv_bridge import CvBridge, CvBridgeError
 # from my_msgs import ProcessorResults
 from sensor_msgs.msg import Image
+from std_msgs.msg import Bool
 
 
 class ImageProcessor:
@@ -29,8 +30,9 @@ class ImageProcessor:
 
         self.bridge = CvBridge()
 
-        self.subscriber = rospy.Subscriber('images', Image, self.callback, queue_size=5)
-        self.image_publisher = rospy.Publisher('processed_images', Image, queue_size=5)
+        self.subscriber = rospy.Subscriber('images', Image, self.callback, queue_size=1)
+        self.image_publisher = rospy.Publisher('processed_images', Image, queue_size=1)
+        self.complete_publisher = rospy.Publisher('processing_complete', Bool, queue_size=1)
         # self.results_publisher = rospy.Publisher('processor_results', ProcessorResults, queue_size=5)
 
     def callback(self, ros_data):
@@ -67,8 +69,8 @@ class ImageProcessor:
                             color=(0, 0, 255),
                             thickness=2)
 
-        # rospy.loginfo("Publishing processor results.")
-        # self.results_publisher.publish(results)
+        rospy.loginfo("Processing Complete.")
+        self.complete_publisher.publish(False)
 
         rospy.loginfo("Publishing highlighted image.")
         try:
