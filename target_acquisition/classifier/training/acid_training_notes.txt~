@@ -78,4 +78,71 @@
     opencv_traincascade -vec training/vectors/acid5.vec -data training/classifiers/acid10 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.3 -numStages 12 -mode ALL -numPos 4000 -numNeg 3000 -w 30 -h 30 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/acid10/log.txt &
 
     NOTE:
+        Tested (400px): 55% -- FAILED
+        Tested (500px): 64% -- FALSE POSITIVE (1)
         Tested (600px): 82% -- FALSE POSITIVE (1)
+
+11th attempt:
+    opencv_createsamples -vec training/vectors/acid5.vec -num 4500 -img positives/acid.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 30 -h 30 -show
+    opencv_traincascade -vec training/vectors/acid5.vec -data training/classifiers/acid11 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.4 -numStages 12 -mode ALL -numPos 4000 -numNeg 3000 -w 30 -h 30 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/acid11/log.txt &
+
+    NOTE:
+        Tested (400px): 45% -- FALSE POSITIVE (1)
+        Tested (500px): 82% -- FALSE POSITIVE (2)
+        Tested (600px): 91% -- FALSE POSITIVE (2)
+
+12th attempt:
+    opencv_createsamples -vec training/vectors/acid6.vec -num 4500 -img positives/acid.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 60 -h 60 -show
+    opencv_traincascade -vec training/vectors/acid6.vec -data training/classifiers/acid12 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.3 -numStages 12 -mode ALL -numPos 4000 -numNeg 3000 -w 60 -h 60 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/acid12/log.txt &
+
+    NOTE:
+        Tested (400px): 9% -- FAILED
+        Tested (500px): 27% -- FAILED
+        Tested (600px): 45% -- FAILED
+        Tested (700px): 45% -- FAILED
+        Tested (800px): 45% -- FAILED
+        Tested (1000px): 55% -- FAILED
+        Tested (1500px): 72% -- PASSED ----
+        Tested (2000px): 64% -- FAILED
+
+13th attempt:
+    opencv_createsamples -vec training/vectors/acid7.vec -num 4500 -img positives/acid.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 50 -h 50 -show
+    opencv_traincascade -vec training/vectors/acid7.vec -data training/classifiers/acid13 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.3 -numStages 12 -mode ALL -numPos 4000 -numNeg 3000 -w 50 -h 50 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/acid13/log.txt &
+
+    NOTE:
+        Tested (400px): 27% -- FAILED
+        Tested (500px): 55% -- FAILED
+        Tested (600px): 45% -- FAILED
+        Tested (700px): 45% -- FAILED
+        Tested (800px): 73% -- FALSE POSITIVE (1)
+        Tested (900px): 91% -- FALSE POSITIVE (1)
+        Tested (1000px): 82% -- FALSE POSITIVE (2)
+        Tested (1500px): 91% -- FALSE POSITIVE (1)
+
+14th attempt:
+    opencv_createsamples -vec training/vectors/acid7.vec -num 4500 -img positives/acid.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 50 -h 50 -show
+    opencv_traincascade -vec training/vectors/acid7.vec -data training/classifiers/acid14 -bg random_negatives.txt -minHitRate 0.999 -maxFalseAlarmRate 0.35 -numStages 12 -mode ALL -numPos 4000 -numNeg 3000 -w 50 -h 50 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/acid14/log.txt &
+
+    NOTE:
+        Tested (400px): 27% -- FALSE POSITIVE (1)
+        Tested (600px): 64% -- FALSE POSITIVE (2)
+        Tested (800px): 73% -- FALSE POSITIVE (6)
+
+15th attempt:
+    opencv_createsamples -vec training/vectors/acid7.vec -num 4500 -img positives/acid.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 50 -h 50 -show
+    opencv_traincascade -vec training/vectors/acid7.vec -data training/classifiers/acid15 -bg random_negatives.txt -minHitRate 0.990 -maxFalseAlarmRate 0.3 -numStages 12 -mode ALL -numPos 4000 -numNeg 3000 -w 50 -h 50 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/acid15/log.txt &
+
+    NOTE:
+        Tested (400px): 9% -- FAILED
+        Tested (600px): 45% -- FAILED
+        Tested (700px): 45% -- FAILED
+        Tested (800px): 82% -- PASSED ----
+        Tested (900px): 64% -- FAILED
+        Tested (1000px): 64% -- FAILED
+        Tested (1200px): 55% -- FALSE POSITIVE (3)
+
+16th attempt:
+    opencv_createsamples -vec training/vectors/acid7.vec -num 4500 -img positives/acid.png -bg random_negatives.txt -bgcolor 0 -bgthresh 0 -maxxangle 0.5 -maxyangle 0.5 -maxzangle 3.1 -w 50 -h 50 -show
+    opencv_traincascade -vec training/vectors/acid7.vec -data training/classifiers/acid16 -bg random_negatives.txt -minHitRate 0.950 -maxFalseAlarmRate 0.3 -numStages 12 -mode ALL -numPos 4000 -numNeg 3000 -w 50 -h 50 -precalcValBufSize 1024 -precalcIdxBufSize 1024 > training/classifiers/acid16/log.txt &
+
+    NOTE:
