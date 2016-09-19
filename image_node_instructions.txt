@@ -1,0 +1,10 @@
+# Open 4 terminal windows, 1 for each node.
+
+# Run this command in all 4 windows.
+cd ~/dragonpi/target_acquisition/ros_pyscripts/
+
+# Run all these nodes in separate terminal windows.
+python camera.py
+python image_processor.py -c classifiers/acid.xml classifiers/flammable.xml classifiers/misc.xml -r 1000
+python image_writer.py -t images -o images/
+python image_writer.py -t processed_images -o processed_images/
