@@ -33,7 +33,7 @@ class ImageWriter:
         rospy.loginfo('Converting from ros image to opencv image.')
         try:
             np_arr = np.fromstring(ros_data.data, np.uint8)
-            cv_image = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
+            cv_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             # cv_image = self.bridge.imgmsg_to_cv2(ros_data, "bgr8")
         except CvBridgeError as e:
             print(e)

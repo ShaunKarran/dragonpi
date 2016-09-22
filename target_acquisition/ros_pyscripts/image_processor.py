@@ -23,10 +23,11 @@ class ImageProcessor:
         """Initialise ros publisher and subscriber and read the classifiers."""
         self.resize_width = resize_width
         self.cascades = {}
-        for classifer_name in classifiers:
-            rospy.loginfo("Loading {}".format(classifer_name))
-            self.cascades[classifer_name] = cv2.CascadeClassifier(classifer_name)
-            self.classifier_publishers[classifer_name] = rospy.Publisher(classifer_name, Bool, queue_size=1)
+        self.classifier_publishers = {}
+        for classifier_name in classifiers:
+            trimmed_name = classifier_name[:-4]
+            self.cascades[trimmed_name] = cv2.CascadeClassifier(classifier_name)
+            self.classifier_publishers[trimmed_name] = rospy.Publisher(trimmed_name, Bool, queue_size=1)
 
         self.bridge = CvBridge()
 
@@ -44,7 +45,7 @@ class ImageProcessor:
         rospy.loginfo("Converting from ros image to opencv image.")
         try:
             np_arr = np.fromstring(ros_data.data, np.uint8)
-            cv_image = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
+            cv_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             # cv_image = self.bridge.imgmsg_to_cv2(ros_data, 'bgr8')
         except CvBridgeError as e:
             print(e)
