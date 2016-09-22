@@ -1,10 +1,13 @@
 from time import sleep
 
+import numpy as np
+
+import cv2
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from picamera import PiCamera, PiCameraError
 from picamera.array import PiRGBArray
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage, Image
 from std_msgs.msg import Empty
 
 
@@ -29,7 +32,8 @@ class Camera:
 
         self.bridge = CvBridge()
         self.subscriber = rospy.Subscriber('take_image', Empty, self.callback, queue_size=1)
-        self.publisher = rospy.Publisher('images', Image, queue_size=1)
+        # self.publisher = rospy.Publisher('images', Image, queue_size=1)
+        self.publisher = rospy.Publisher('images', CompressedImage, queue_size=1)
 
     def callback(self, req):
         """
@@ -40,11 +44,15 @@ class Camera:
         rospy.loginfo("Capturing image.")
         self.rawCapture.truncate(0)
         self.camera.capture(self.rawCapture, format='bgr')
-        cv2_image = self.rawCapture.array
+        cv_image = self.rawCapture.array
 
         rospy.loginfo("Publishing image.")
         try:
-            ros_image = self.bridge.cv2_to_imgmsg(cv2_image, 'bgr8')
+            ros_image = CompressedImage()
+            ros_image.header.stamp = rospy.Time.now()
+            ros_image.format = 'jpeg'
+            ros_image.data = np.array(cv2.imencode('.jpg', cv_image)[1]).tostring()
+            # ros_image = self.bridge.cv2_to_imgmsg(cv_image, 'bgr8')
             self.publisher.publish(ros_image)
         except CvBridgeError as e:
             print(e)

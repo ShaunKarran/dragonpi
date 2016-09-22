@@ -2,10 +2,12 @@ import argparse
 import os
 import sys
 
+import numpy as np
+
 import cv2
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage, Image
 
 
 class ImageWriter:
@@ -19,7 +21,8 @@ class ImageWriter:
         self.number_written = 0
 
         self.bridge = CvBridge()
-        self.subscriber = rospy.Subscriber(topic_name, Image, self.callback, queue_size=1)
+        # self.subscriber = rospy.Subscriber(topic_name, Image, self.callback, queue_size=1)
+        self.subscriber = rospy.Subscriber(topic_name, CompressedImage, self.callback, queue_size=1)
 
     def callback(self, ros_data):
         """
@@ -29,7 +32,9 @@ class ImageWriter:
         """
         rospy.loginfo('Converting from ros image to opencv image.')
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(ros_data, "bgr8")
+            np_arr = np.fromstring(ros_data.data, np.uint8)
+            cv_image = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
+            # cv_image = self.bridge.imgmsg_to_cv2(ros_data, "bgr8")
         except CvBridgeError as e:
             print(e)
 
