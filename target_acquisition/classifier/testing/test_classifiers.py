@@ -129,6 +129,7 @@ def main(args):
     print "\nAccuracy\t",
     for cascade_name, _ in sorted(cascades.iteritems()):
         print "{:.1f}%\t\t".format(number_detected_positives[cascade_name] / number_positives[cascade_name] * 100),
+    print ""
 
 
 if __name__ == '__main__':
