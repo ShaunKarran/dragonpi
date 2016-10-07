@@ -5,10 +5,10 @@ import os
 import sys
 from collections import defaultdict
 
-from termcolor import colored
-
 import cv2
+
 import imutils
+from termcolor import colored
 
 expected_results = {
     "image_00.jpg": {"acid": 0, "flammable": 0, "misc": 1},
@@ -18,7 +18,7 @@ expected_results = {
     "image_04.jpg": {"acid": 1, "flammable": 0, "misc": 0},
     "image_05.jpg": {"acid": 0, "flammable": 0, "misc": 0},
     "image_06.jpg": {"acid": 0, "flammable": 0, "misc": 0},
-    "image_07.jpg": {"acid": 0, "flammable": 0, "misc": 0},
+    "image_07.jpg": {"acid": 0, "flammable": 1, "misc": 0},
     "image_08.jpg": {"acid": 0, "flammable": 0, "misc": 0},
     "image_09.jpg": {"acid": 0, "flammable": 0, "misc": 0},
     "image_10.jpg": {"acid": 0, "flammable": 0, "misc": 0},
@@ -28,7 +28,6 @@ expected_results = {
     "image_14.jpg": {"acid": 0, "flammable": 1, "misc": 0},
     "image_15.jpg": {"acid": 0, "flammable": 0, "misc": 1},
     "image_16.jpg": {"acid": 1, "flammable": 0, "misc": 0},
-    "image_17.jpg": {"acid": 0, "flammable": 0, "misc": 0},
     "image_18.jpg": {"acid": 0, "flammable": 0, "misc": 1},
     "image_19.jpg": {"acid": 0, "flammable": 0, "misc": 1},
     "image_20.jpg": {"acid": 0, "flammable": 0, "misc": 1},
@@ -87,9 +86,11 @@ def main(args):
     # Store the total number of times each target appears in the set of test images.
     number_positives = defaultdict(int)
     for cascade_name, _ in cascades.iteritems():
-        number_positives[cascade_name] += sum([results[cascade_name] for _, results in expected_results.iteritems()])
+        number_positives[cascade_name] += sum([results[cascade_name]
+                                               for _, results in expected_results.iteritems()])
 
-    number_detected_positives = defaultdict(int)  # Used to store a count of how many times each target is found.
+    # Used to store a count of how many times each target is found.
+    number_detected_positives = defaultdict(int)
 
     for file_name in os.listdir('./images'):
         image = cv2.imread(os.path.join('./images', file_name))
@@ -128,7 +129,8 @@ def main(args):
 
     print "\nAccuracy\t",
     for cascade_name, _ in sorted(cascades.iteritems()):
-        print "{:.1f}%\t\t".format(number_detected_positives[cascade_name] / number_positives[cascade_name] * 100),
+        print "{:.1f}%\t\t".format(
+            number_detected_positives[cascade_name] / number_positives[cascade_name] * 100),
     print ""
 
 
