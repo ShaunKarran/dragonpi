@@ -10,9 +10,9 @@ class Servo:
     def __init__(self):
         """Initialise ros publisher and subscriber."""
         self.ss = ServoSix()
-        self.ss.servo_min = 1000  # 1ms pulse = -90
-        self.ss.servo_max = 2000  # 2ms pulse = +90
-        self.servo = 1  # Servo channel
+        self.vertical_servo = 2  # Servo channel for vertical pivot.
+
+        self.ss.set_servo(1, 88)  # Horizontal pivot is slightly off, 88 points straight ahead.
 
         self.subscriber = rospy.Subscriber('position_servo', Bool, self.callback, queue_size=1)
 
@@ -20,11 +20,11 @@ class Servo:
         """
         """
         if (ros_data.data):
-            angle = 90
+            angle = 95  # 95 points straight ahead.
         else:
             angle = 0
 
-        self.ss.set_servo(self.servo, angle)
+        self.ss.set_servo(self.vertical_servo, angle)
 
 
 def main():
