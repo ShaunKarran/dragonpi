@@ -1,8 +1,8 @@
 from time import sleep
 
+import cv2
 import numpy as np
 
-import cv2
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from picamera import PiCamera, PiCameraError

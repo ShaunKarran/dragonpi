@@ -12,7 +12,9 @@ class Servo:
         self.ss = ServoSix()
         self.vertical_servo = 2  # Servo channel for vertical pivot.
 
+        # Set initial position.
         self.ss.set_servo(1, 88)  # Horizontal pivot is slightly off, 88 points straight ahead.
+        self.ss.set_servo(2, 0)
 
         self.subscriber = rospy.Subscriber('position_servo', Bool, self.callback, queue_size=1)
 
