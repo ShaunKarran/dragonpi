@@ -7,7 +7,7 @@ import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from picamera import PiCamera, PiCameraError
 from picamera.array import PiRGBArray
-from sensor_msgs.msg import CompressedImage, Image
+from sensor_msgs.msg import CompressedImage
 from std_msgs.msg import Empty
 
 
@@ -22,8 +22,8 @@ class Camera:
 
     def __init__(self):
         """Initialise ros publisher and subscriber."""
-        # Camera initialisation.
         try:
+            # Camera initialisation.
             self.camera = PiCamera()
             self.rawCapture = PiRGBArray(self.camera)
             sleep(0.1)  # Sleep to give camera time to start up.

@@ -1,13 +1,13 @@
 import argparse
 import sys
 
+import cv2
 import numpy as np
 
-import cv2
 import imutils
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
-from sensor_msgs.msg import CompressedImage, Image
+from sensor_msgs.msg import CompressedImage
 from std_msgs.msg import Bool
 
 
@@ -15,8 +15,8 @@ class ImageProcessor:
     """
     Class containing a ros publisher and subscirber.
 
-    Subscriber listens to the images topic which triggers the callback function. It then publishes the results of the
-    processing and an image with found targets to a highlighted_images topic.
+    Subscriber listens to the images topic which triggers the callback function. The callback publishes
+    the results of the processing and an image with found targets to a highlighted_images topic.
     """
 
     def __init__(self, classifiers, resize_width):
@@ -24,10 +24,13 @@ class ImageProcessor:
         self.resize_width = resize_width
         self.cascades = {}
         self.classifier_publishers = {}
+        self.target_seach_complete = {}
+
         for classifier_name in classifiers:
             trimmed_name = classifier_name[:-4]
             self.cascades[trimmed_name] = cv2.CascadeClassifier(classifier_name)
             self.classifier_publishers[trimmed_name] = rospy.Publisher(trimmed_name, Bool, queue_size=1)
+            self.target_seach_complete = False
 
         self.bridge = CvBridge()
 
@@ -39,8 +42,8 @@ class ImageProcessor:
         """
         Callback function that is called when a message is recieved by the subscriber.
 
-        Converts the image to an openCV image, runs the detection algorithm for each classifer on the image and then
-        publishes the results and a new image with bounding boxes drawn around the targets.
+        Converts the image to an openCV image, runs the detection algorithm for each classifer on the image
+        and then publishes the results and a new image with bounding boxes drawn around the targets.
         """
         rospy.loginfo("Converting from ros image to opencv image.")
         try:
@@ -56,8 +59,11 @@ class ImageProcessor:
 
         targets_detected = {}
         for classifier_name, cascade in self.cascades.iteritems():
-            rospy.loginfo("Running detection for {}".format(classifier_name))
-            targets_detected[classifier_name] = cascade.detectMultiScale(cv_image)
+            if not self.target_seach_complete[classifier_name]:
+                rospy.loginfo("Running detection for {}".format(classifier_name))
+                targets_detected[classifier_name] = cascade.detectMultiScale(cv_image)
+            else:
+                rospy.loginfo("Skipping detection for {}. Already found.".format(classifier_name))
 
         # Draw bounding box around targets in image.
         for classifier_name, results in targets_detected.iteritems():
