@@ -30,7 +30,7 @@ class ImageProcessor:
             trimmed_name = classifier_name[:-4]
             self.cascades[trimmed_name] = cv2.CascadeClassifier(classifier_name)
             self.classifier_publishers[trimmed_name] = rospy.Publisher(trimmed_name, Bool, queue_size=1)
-            self.target_seach_complete = False
+            self.target_seach_complete[trimmed_name] = False
 
         self.bridge = CvBridge()
 
@@ -59,7 +59,7 @@ class ImageProcessor:
 
         targets_detected = {}
         for classifier_name, cascade in self.cascades.iteritems():
-            if not self.target_seach_complete[classifier_name]:
+            if self.target_seach_complete[classifier_name]:
                 rospy.loginfo("Running detection for {}".format(classifier_name))
                 targets_detected[classifier_name] = cascade.detectMultiScale(cv_image)
             else:
