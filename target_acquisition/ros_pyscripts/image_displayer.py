@@ -13,7 +13,7 @@ from sensor_msgs.msg import CompressedImage
 class ImageDisplayer:
     """Class to convert images from the 'images' topic to openCV format and write them to file."""
 
-    def __init__(self, topic_name, file_name, format, output_path):
+    def __init__(self, topic_name):
         """Initialise member variables and create ros subscriber."""
         self.topic_name = topic_name
         # self.bridge = CvBridge()
