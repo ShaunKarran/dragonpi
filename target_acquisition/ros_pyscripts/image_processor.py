@@ -90,7 +90,7 @@ class ImageProcessor:
                 rospy.loginfo("Skipping detection for {}. Already found.".format(classifier_name))
 
         rospy.loginfo("Processing complete.")
-        self.complete_publisher.publish(False)
+        self.complete_publisher.publish(True)
 
         rospy.loginfo("Publishing highlighted image.")
         try:

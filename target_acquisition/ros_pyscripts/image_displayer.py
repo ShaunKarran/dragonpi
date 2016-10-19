@@ -33,9 +33,9 @@ class ImageDisplayer:
 def main(args):
     """Initialize and cleanup ros node."""
     image_writer = ImageDisplayer(args.topic_name)
-    rospy.init_node('image_writer', anonymous=True)
+    rospy.init_node('image_displayer', anonymous=True)
     try:
-        rospy.loginfo("Image Writer node running.")
+        rospy.loginfo("Image Displayer node running.")
         rospy.spin()
     except KeyboardInterrupt:
         print "Shutting down ROS Image processor module."
