@@ -59,44 +59,45 @@ class ImageProcessor:
 
         targets_detected = {}
         for classifier_name, cascade in self.cascades.iteritems():
-            if self.target_seach_complete[classifier_name]:
+            if not self.target_seach_complete[classifier_name]:
                 rospy.loginfo("Running detection for {}".format(classifier_name))
                 targets_detected[classifier_name] = cascade.detectMultiScale(cv_image)
+
+                # Draw bounding box around targets in image.
+                for classifier_name, results in targets_detected.iteritems():
+                    for (x, y, w, h) in results:
+                        cv_image = cv2.rectangle(cv_image, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                        cv2.putText(img=cv_image,
+                                    text=classifier_name,
+                                    org=(x, y),
+                                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                    fontScale=0.6,
+                                    color=(0, 0, 255),
+                                    thickness=2)
+
+                rospy.loginfo("Processing complete.")
+                self.complete_publisher.publish(False)
+
+                rospy.loginfo("Publishing results.")
+                for classifier_name, publisher in self.classifier_publishers.iteritems():
+                    if len(targets_detected[classifier_name]) > 0:
+                        publisher.publish(True)
+                    else:
+                        publisher.publish(False)
+
+                rospy.loginfo("Publishing highlighted image.")
+                try:
+                    ros_image = CompressedImage()
+                    ros_image.header.stamp = rospy.Time.now()
+                    ros_image.format = 'jpeg'
+                    ros_image.data = np.array(cv2.imencode('.jpg', cv_image)[1]).tostring()
+                    # ros_image = self.bridge.cv2_to_imgmsg(cv_image, "bgr8")
+                    self.image_publisher.publish(ros_image)
+                except CvBridgeError as e:
+                    print(e)
+
             else:
                 rospy.loginfo("Skipping detection for {}. Already found.".format(classifier_name))
-
-        # Draw bounding box around targets in image.
-        for classifier_name, results in targets_detected.iteritems():
-            for (x, y, w, h) in results:
-                cv_image = cv2.rectangle(cv_image, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                cv2.putText(img=cv_image,
-                            text=classifier_name,
-                            org=(x, y),
-                            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                            fontScale=0.6,
-                            color=(0, 0, 255),
-                            thickness=2)
-
-        rospy.loginfo("Processing complete.")
-        self.complete_publisher.publish(False)
-
-        rospy.loginfo("Publishing results.")
-        for classifier_name, publisher in self.classifier_publishers.iteritems():
-            if len(targets_detected[classifier_name]) > 0:
-                publisher.publish(True)
-            else:
-                publisher.publish(False)
-
-        rospy.loginfo("Publishing highlighted image.")
-        try:
-            ros_image = CompressedImage()
-            ros_image.header.stamp = rospy.Time.now()
-            ros_image.format = 'jpeg'
-            ros_image.data = np.array(cv2.imencode('.jpg', cv_image)[1]).tostring()
-            # ros_image = self.bridge.cv2_to_imgmsg(cv_image, "bgr8")
-            self.image_publisher.publish(ros_image)
-        except CvBridgeError as e:
-            print(e)
 
 
 def main(args):
