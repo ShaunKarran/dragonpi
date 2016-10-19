@@ -75,15 +75,16 @@ class ImageProcessor:
                                     color=(0, 0, 255),
                                     thickness=2)
 
-                rospy.loginfo("Processing complete.")
-                self.complete_publisher.publish(False)
-
                 rospy.loginfo("Publishing results.")
-                for classifier_name, publisher in self.classifier_publishers.iteritems():
-                    if len(targets_detected[classifier_name]) > 0:
-                        publisher.publish(True)
-                    else:
-                        publisher.publish(False)
+                # for classifier_name, publisher in self.classifier_publishers.iteritems():
+                #   if len(targets_detected[classifier_name]) > 0:
+                #       publisher.publish(True)
+                #   else:
+                #       publisher.publish(False)
+                if len(targets_detected[classifier_name]) > 0:
+                    self.classifier_publishers[classifier_name].publish(True)
+                else:
+                    self.classifier_publishers[classifier_name].publish(False)
 
                 rospy.loginfo("Publishing highlighted image.")
                 try:
@@ -98,6 +99,9 @@ class ImageProcessor:
 
             else:
                 rospy.loginfo("Skipping detection for {}. Already found.".format(classifier_name))
+
+            rospy.loginfo("Processing complete.")
+            self.complete_publisher.publish(False)
 
 
 def main(args):
