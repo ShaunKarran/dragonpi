@@ -46,7 +46,7 @@ class ImageDisplayer:
 
 def main(args):
     """Initialize and cleanup ros node."""
-    image_writer = ImageDisplayer(args.topic_name, args.file_name, args.format, args.output_path)
+    image_writer = ImageDisplayer(args.topic_name)
     rospy.init_node('image_writer', anonymous=True)
     try:
         rospy.loginfo("Image Writer node running.")
