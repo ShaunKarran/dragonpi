@@ -89,19 +89,19 @@ class ImageProcessor:
             else:
                 rospy.loginfo("Skipping detection for {}. Already found.".format(classifier_name))
 
-            rospy.loginfo("Processing complete.")
-            self.complete_publisher.publish(False)
+        rospy.loginfo("Processing complete.")
+        self.complete_publisher.publish(False)
 
-            rospy.loginfo("Publishing highlighted image.")
-            try:
-                ros_image = CompressedImage()
-                ros_image.header.stamp = rospy.Time.now()
-                ros_image.format = 'jpeg'
-                ros_image.data = np.array(cv2.imencode('.jpg', cv_image)[1]).tostring()
-                # ros_image = self.bridge.cv2_to_imgmsg(cv_image, "bgr8")
-                self.image_publisher.publish(ros_image)
-            except CvBridgeError as e:
-                print(e)
+        rospy.loginfo("Publishing highlighted image.")
+        try:
+            ros_image = CompressedImage()
+            ros_image.header.stamp = rospy.Time.now()
+            ros_image.format = 'jpeg'
+            ros_image.data = np.array(cv2.imencode('.jpg', cv_image)[1]).tostring()
+            # ros_image = self.bridge.cv2_to_imgmsg(cv_image, "bgr8")
+            self.image_publisher.publish(ros_image)
+        except CvBridgeError as e:
+            print(e)
 
 
 def main(args):
