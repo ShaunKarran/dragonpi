@@ -83,6 +83,7 @@ class ImageProcessor:
                 #       publisher.publish(False)
                 if len(targets_detected[classifier_name]) > 0:
                     self.classifier_publishers[classifier_name].publish(True)
+                    self.target_seach_complete[classifier_name] = True
                 else:
                     self.classifier_publishers[classifier_name].publish(False)
 
