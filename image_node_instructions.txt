@@ -23,6 +23,9 @@ python ~/dragonpi/target_acquisition/ros_pyscripts/image_writer.py -t images -o 
 python ~/dragonpi/target_acquisition/ros_pyscripts/image_writer.py -t processed_images -o processed_images/
 python ~/dragonpi/target_acquisition/ros_pyscripts/vocaliser.py
 
+# NOTE: For vocaliser to start run this command.
+rostopic pub start_vocaliser std_msgs/Empty
+
 # To copy images from Pi for image stitching.
 rsync -r ubuntu@dragonpi:~/dragonpi/target_acquisition/ros_pyscripts/images/ ~/Desktop/images/
 
