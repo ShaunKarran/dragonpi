@@ -1,15 +1,32 @@
-# Open 5 terminal windows, 1 for each node.
+# -----------------------------------------------------------------------------------------------------------
 
-# Run this command in all 5 windows.
-cd ~/dragonpi/target_acquisition/ros_pyscripts/
+# Open 5 terminal windows, SSH into the Pi.
 
-# Run all these nodes, 1 in each terminal windows.
-python camera.py
-python servo.py
-python image_processor.py -c classifiers/acid.xml classifiers/flammable.xml classifiers/misc.xml -r 1100
-python image_writer.py -t images -o images/
-python image_writer.py -t processed_images -o processed_images/
+# Window 1
+python ~/dragonpi/target_acquisition/ros_pyscripts/camera.py
 
-# Use to copy images from the pi to local machine.
+# Window 2
+python ~/dragonpi/target_acquisition/ros_pyscripts/servo.py
+
+# Window 3
+python ~/dragonpi/target_acquisition/ros_pyscripts/image_processor.py -c classifiers/acid.xml classifiers/flammable.xml classifiers/misc.xml -r 1100
+
+# Window 4
+python ~/dragonpi/aqs/AQS_PI.py
+
+# Window 5
+python ~/dragonpi/target_acquisition/ros_pyscripts/image_writer.py -t images -o images/
+
+# -----------------------------------------------------------------------------------------------------------
+
+# Run these on laptop in Ubuntu VM.
+python ~/dragonpi/target_acquisition/ros_pyscripts/image_writer.py -t processed_images -o processed_images/
+python ~/dragonpi/target_acquisition/ros_pyscripts/vocaliser.py
+
+# To copy images from Pi for image stitching.
 rsync -r ubuntu@dragonpi:~/dragonpi/target_acquisition/ros_pyscripts/images/ ~/Desktop/images/
-rsync -r ubuntu@dragonpi:~/dragonpi/target_acquisition/ros_pyscripts/processed_images/ ~/Desktop/processed_images/
+
+# OR if name isnt working.
+rsync -r ubuntu@192.168.1.135:~/dragonpi/target_acquisition/ros_pyscripts/images/ ~/Desktop/images/
+
+# -----------------------------------------------------------------------------------------------------------
