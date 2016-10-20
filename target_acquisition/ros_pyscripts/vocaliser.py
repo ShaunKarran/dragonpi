@@ -7,6 +7,7 @@ class Vocaliser:
 
     def __init__(self):
         self.engine = pyttsx.init()
+        self.engine.connect('finished-utterance', self.onFinishedUtterance)
 
         self.acid_subscriber = rospy.Subscriber('classifiers/acid', Bool, self.acid_callback, queue_size=1)
         self.flammable_subscriber = rospy.Subscriber('classifiers/flammable', Bool,
@@ -16,17 +17,20 @@ class Vocaliser:
     def acid_callback(self, ros_data):
         if ros_data.data:
             self.engine.say("Yellow target found. Hovering for 10 seconds.")
-            self.engine.runAndWait()
+            self.engine.startLoop()
 
     def flammable_callback(self, ros_data):
         if ros_data.data:
             self.engine.say("Red target found. Hovering for 10 seconds.")
-            self.engine.runAndWait()
+            self.engine.startLoop()
 
     def misc_callback(self, ros_data):
         if ros_data.data:
             self.engine.say("Black target found. Hovering for 10 seconds.")
-            self.engine.runAndWait()
+            self.engine.startLoop()
+
+    def onFinishedUtterance(name, completed):
+        engine.endLoop()
 
 
 def main():
