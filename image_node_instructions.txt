@@ -19,16 +19,21 @@ python ~/dragonpi/target_acquisition/ros_pyscripts/image_writer.py -t images -o 
 
 # -----------------------------------------------------------------------------------------------------------
 
-# Run these on laptop in Ubuntu VM.
+# On Ubuntu VM open 3 terminal windows.
+
+# Window 1
 python ~/dragonpi/target_acquisition/ros_pyscripts/image_writer.py -t processed_images -o processed_images/
+
+# Window 2
 python ~/dragonpi/target_acquisition/ros_pyscripts/vocaliser.py
 
-# NOTE: For vocaliser to start run this command.
+# Window 3 NOTE: Run after Window 2. Starts vocaliser loop.
 rostopic pub start_vocaliser std_msgs/Empty
+
+# -----------------------------------------------------------------------------------------------------------
 
 # To copy images from Pi for image stitching.
 rsync -r ubuntu@dragonpi:~/dragonpi/target_acquisition/ros_pyscripts/images/ ~/Desktop/images/
-
 # OR if name isnt working.
 rsync -r ubuntu@192.168.1.135:~/dragonpi/target_acquisition/ros_pyscripts/images/ ~/Desktop/images/
 
