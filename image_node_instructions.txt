@@ -9,13 +9,15 @@ python ~/dragonpi/target_acquisition/ros_pyscripts/camera.py
 python ~/dragonpi/target_acquisition/ros_pyscripts/servo.py
 
 # Window 3
-python ~/dragonpi/target_acquisition/ros_pyscripts/image_processor.py -c classifiers/acid.xml classifiers/flammable.xml classifiers/misc.xml -r 1100
+cd ~/dragonpi/target_acquisition/ros_pyscripts
+python image_processor.py -c classifiers/acid.xml classifiers/flammable.xml classifiers/misc.xml -r 1100
 
 # Window 4
-python ~/dragonpi/aqs/AQS_PI.py
+python ~/dragonpi/aqs/AQS_Pi.py
 
 # Window 5
-python ~/dragonpi/target_acquisition/ros_pyscripts/image_writer.py -t images -o images/
+cd ~/dragonpi/target_acquisition/ros_pyscripts
+python image_writer.py -t images -o images/
 
 # -----------------------------------------------------------------------------------------------------------
 
