@@ -197,7 +197,6 @@ int main(int argc, char **argv)
 
 
   geometry_msgs::Vector3 rotate;// used for rotation when constucting wayPoints
-  //int rotate90DegClockWise = 90; // for readability UAV will roate 90deg after each wall is searched
 
   // read in ground way points
   int numGroundWayPoints;
