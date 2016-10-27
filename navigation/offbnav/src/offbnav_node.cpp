@@ -21,6 +21,7 @@
 #include <iostream>
 #include <algorithm>
 #include <stdlib.h>
+#include <math.h>
 
 using namespace std;
 
@@ -56,20 +57,20 @@ void imageProcCompl_cb(const std_msgs::Bool::ConstPtr& msg){
     imageProcCompl = true;
 }
 
-bool acidFound;
+bool acidFound = false;
 void acidFound_cb(const std_msgs::Bool::ConstPtr& msg){
     acidFound = msg->data;
 
 }
 
-bool miscFound;
+bool miscFound = false;
 void miscFound_cb(const std_msgs::Bool::ConstPtr& msg){
     miscFound = msg->data;
 }
 
-bool flamableFound;
-void flamableFound_cb(const std_msgs::Bool::ConstPtr& msg){
-    flamableFound = msg->data;
+bool flammableFound = false;;
+void flammableFound_cb(const std_msgs::Bool::ConstPtr& msg){
+    flammableFound = msg->data;
 
 }
 
@@ -120,17 +121,15 @@ geometry_msgs::Quaternion toQuaternion(geometry_msgs::Vector3 e) {
 
 bool goalPositionReached(geometry_msgs::PoseStamped goalPose, geometry_msgs::TransformStamped currentPose){
 	bool goalReached = false;
-        double xDif = fabs(goalPose.pose.position.x - currentPose.transform.translation.x);
-        double yDif = fabs(goalPose.pose.position.y - currentPose.transform.translation.y);
-        double zDif = fabs(goalPose.pose.position.z - currentPose.transform.translation.z);
+	double xDif = fabs(goalPose.pose.position.x - currentPose.transform.translation.x);
+	double yDif = fabs(goalPose.pose.position.y - currentPose.transform.translation.y);
+	double zDif = fabs(goalPose.pose.position.z - currentPose.transform.translation.z);
 
 	//convert current orientation to euler
-	geometry_msgs::Vector3 currentPoseEuler = toEuler(currentPose.transform.rotation);
-        double zOriDif = abs(goalPose.pose.orientation.z - currentPoseEuler.z);
+	double zOriDif = abs(toEuler(goalPose.pose.orientation).z - toEuler(currentPose.transform.rotation).z);
 
 	if(xDif <= wayPointTolerance && yDif <= wayPointTolerance && zDif <= wayPointTolerance && zOriDif <= orientationTolerance){
-            //ROS_INFO("Calculated Difference: %0.2f, %0.2f, %0.2f", xDif, yDif, zDif);
-
+		//ROS_INFO("Calculated Difference: %0.2f, %0.2f, %0.2f", xDif, yDif, zDif);
 		goalReached = true;
 	}
 
@@ -195,37 +194,39 @@ int main(int argc, char **argv)
 {
   // construct vector for way points
   std::vector<geometry_msgs::PoseStamped> wayPoints;
+
+
   geometry_msgs::Vector3 rotate;// used for rotation when constucting wayPoints
-  int rotate90DegClockWise = 90; // for readability UAV will roate 90deg after each wall is searched
+  //int rotate90DegClockWise = 90; // for readability UAV will roate 90deg after each wall is searched
 
   // read in ground way points
   int numGroundWayPoints;
-  char pathToGround[] = "/home/mitchell/catkin_ws/src/offbnav/src/groundWayPoints.txt";
+  char pathToGround[] = "/home/quas/catkin_ws_g1/src/offbnav/src/groundWayPoints.txt";
   rotate.z = 0; // 0 rotation for ground way points
   readInCords(pathToGround, &wayPoints, rotate);
   numGroundWayPoints = wayPoints.size(); // use this for knowing when to rotate servo
 
   //read in right side wayPoints
-  char pathToRight[] = "/home/mitchell/catkin_ws/src/offbnav/src/rightSideWayPoints.txt";
-  rotate.z += rotate90DegClockWise;
+  char pathToRight[] = "/home/quas/catkin_ws_g1/src/offbnav/src/rightSideWayPoints.txt";
+  rotate.z = M_PI;
   readInCords(pathToRight, &wayPoints, rotate);
 
 
   //read in bottom side wayPoints
-  char pathToBottom[] = "/home/mitchell/catkin_ws/src/offbnav/src/bottomSideWayPoints.txt";
-  rotate.z += rotate90DegClockWise;
+  char pathToBottom[] = "/home/quas/catkin_ws_g1/src/offbnav/src/bottomSideWayPoints.txt";
+  rotate.z = 0.5*(M_PI);
   readInCords(pathToBottom, &wayPoints, rotate);
 
 
   //read in left side wayPoints
-  char pathToLeft[] = "/home/mitchell/catkin_ws/src/offbnav/src/leftSideWayPoints.txt";
-  rotate.z += rotate90DegClockWise;
+  char pathToLeft[] = "/home/quas/catkin_ws_g1/src/offbnav/src/leftSideWayPoints.txt";
+  rotate.z = 0;
   readInCords(pathToLeft, &wayPoints, rotate);
 
 
   //read in top side wayPoints
-  char pathToTop[] = "/home/mitchell/catkin_ws/src/offbnav/src/topSideWayPoints.txt";
-  rotate.z += rotate90DegClockWise;
+  char pathToTop[] = "/home/quas/catkin_ws_g1/src/offbnav/src/topSideWayPoints.txt";
+  rotate.z = -0.5*(M_PI);
   readInCords(pathToTop, &wayPoints, rotate);
 
   ros::init(argc, argv, "offb_node");
@@ -261,14 +262,15 @@ int main(int argc, char **argv)
   /* image processing */
 
   ros::Subscriber acid_found = nh.subscribe<std_msgs::Bool>
-          ("/acid",10, acidFound_cb);
+          ("/classifiers/acid",10, acidFound_cb);
   ros::Subscriber misc_found = nh.subscribe<std_msgs::Bool>
-          ("/pmisc",10, miscFound_cb);
-  ros::Subscriber flamable_found = nh.subscribe<std_msgs::Bool>
-          ("/flamable",10, flamableFound_cb);
+          ("/classifiers/misc",10, miscFound_cb);
+  ros::Subscriber flammable_found = nh.subscribe<std_msgs::Bool>
+          ("/classifiers/flammable",10, flammableFound_cb);
 
 
-
+	//for ( std::vector<geometry_msgs::PoseStamped>::const_iterator i = wayPoints.begin(); i != wayPoints.end(); ++i)
+    //std::cout << *i << ' ';
 
 
 
@@ -297,7 +299,7 @@ int main(int argc, char **argv)
     poseLand.header.frame_id = "world";
     poseLand.pose.position.x = 0;
     poseLand.pose.position.y = 0;
-    poseLand.pose.position.z = 0;
+    poseLand.pose.position.z = 0.2;
     rotate.z = 0;
     poseLand.pose.orientation = toQuaternion(rotate);
 
@@ -322,6 +324,7 @@ int main(int argc, char **argv)
     std_msgs::Empty takeImage;
     bool takeImg = true;
 
+
     while(ros::ok()){ // need to timestamp poses pased
 
         pose.header.seq++;
@@ -329,10 +332,11 @@ int main(int argc, char **argv)
 
         if(!navComplete){
           if(goalPositionReached(pose, current_pos_t)){ // has UAV reached current waypoint
-            if(waypointNumCompleted = 1)// UAV has taken off
+            if(waypointNumCompleted == 1)// UAV has taken off
             {
               flightTimeStart = ros::Time::now(); // get time before flight begins
-            }else if(waypointNumCompleted==numberOfWaypointsToComplete){ // this is just the number of waypoints im passing
+			  waypointNumCompleted++;
+			}else if(waypointNumCompleted==numberOfWaypointsToComplete){ // this is just the number of waypoints im passing
               ROS_INFO("NAV Complete, preparing for landing");
               totalFlightTime = ros::Time::now() - flightTimeStart;
               double flightTimeInMin = (totalFlightTime.toSec())/60;
@@ -344,48 +348,55 @@ int main(int argc, char **argv)
               ROS_INFO("Landing");
               pose.pose = poseLand.pose;
             }else if(waypointNumCompleted==numGroundWayPoints){ // we are at the end of our ground way points need to move servo
-              ROS_INFO("Moving the Servo");
+              ROS_INFO("\n\nMoving the Servo");
               std_msgs::Bool move_servo_bool;
               move_servo_bool.data = true;
               move_servo.publish(move_servo_bool);
               waypointNumCompleted++;
-            }else{
+            }else{ // we are at a way points from our vector
               if(takeImg){
-                ROS_INFO("Way point reached");
+                ROS_INFO("\nWay point reached");
                 take_image_pub.publish(takeImage); // take image
                 ROS_INFO("Instructing Image to capture photo.");
                 takeImg = false; // avoid publishing every iteration
               }
 
-            if(imageProcCompl){
-              ROS_INFO("Image Process Complete.");
-              imageProcCompl = false;
-                if(acidFound || miscFound || flamableFound){ // an image has been found
-                  currentTime = ros::Time::now();
-                  //while time has not elapsed from current time
-                  ROS_INFO("Target has been found at waypoint x: %f, y: %f, z: %f  hovering for 10 seconds for AQS to sample", pose.pose.position.x, pose.pose.position.y, pose.pose.position.z);
-                  while(ros::Time::now() - currentTime < ros::Duration(10.0)) // hover for 10 seconds at target for AQS
-                  {
-                    pose.header.stamp = ros::Time::now();
-                    local_pos_pub.publish(pose);
-                    ros::spinOnce();
-                    rate.sleep();
-                 }
-               }else{
-                 ROS_INFO("No target found at waypoint x: %f, y: %f, z: %f", pose.pose.position.x, pose.pose.position.y, pose.pose.position.z);
-                 pose.pose = wayPoints[waypointNumCompleted].pose; // set pose to next waypoint
-                 waypointNumCompleted++; // increment waypoint counter
-                 takeImg = true;
-               }
-             }
+			  if(imageProcCompl){
+				ROS_INFO("Image Process Complete.");
+				imageProcCompl = false;
+				if(acidFound || miscFound || flammableFound){ // an image has been found
+					currentTime = ros::Time::now();
+					//while time has not elapsed from current time
+					ROS_INFO("Target has been found at waypoint x: %0.2f, y: %0.2f, z: %0.2f  hovering for 10 seconds for AQS to sample", pose.pose.position.x, pose.pose.position.y, pose.pose.position.z);
+					while(ros::Time::now() - currentTime < ros::Duration(10.0)) // hover for 10 seconds at target for AQS
+					{
+						pose.header.stamp = ros::Time::now();
+						local_pos_pub.publish(pose);
+						ros::spinOnce();
+						rate.sleep();
+					}
+					ROS_INFO("10 sec hover complete moving to next search wayPoint");
+					acidFound = false;
+					miscFound = false;
+					flammableFound = false;
+					pose.pose = wayPoints[waypointNumCompleted].pose; // set pose to next waypoint
+					waypointNumCompleted++; // increment waypoint counter
+					takeImg = true;
 
-           }
+				}else{
+					ROS_INFO("No target found at waypoint x: %0.2f, y: %0.2f, z: %0.2f", pose.pose.position.x, pose.pose.position.y, pose.pose.position.z);
+					pose.pose = wayPoints[waypointNumCompleted].pose; // set pose to next waypoint
+					waypointNumCompleted++; // increment waypoint counter
+					takeImg = true;
+				}
+              }
+			}
          }
       }
 
 
 
-		    pose.header.stamp = ros::Time::now();
+	    pose.header.stamp = ros::Time::now();
         local_pos_pub.publish(pose);
 
         ros::spinOnce();

@@ -300,13 +300,13 @@ def main():
                 minY = -2
                 maxY = 2
 
-                FOVFD = 45 #Field of view foward direction for rasberry pi camera
-                FOVAD = 60 #Field of view adjacent direction for rasberry pi camera
+                FOVFD = 45
+                FOVAD = 60
 
-                altitude = 1 #distance from target
+                altitude = 1
 
-                overlapFD = 20 #overlap Foward direction
-                overlapAD = 15 #overlap Adjacent direction
+                overlapFD = 20
+                overlapAD = 15
 
 
 
@@ -339,7 +339,7 @@ def main():
 
 
 	    #Generate wall search points
-        rightSideWayPoints,  bottomSideWayPoints, leftSideWayPoints, topSideWayPoints = generateWallWaypoints(lenFD, lenAD, overlapAD, overlapFD, minX, maxX, minY, maxY, minAlt, maxAlt, distanceFromTarget)
+        rightSideWayPoints,  bottomSideWayPoints, leftSideWayPoints, topSideWayPoints = generateWallWaypoints(lenFD, lenAD, overlapAD, overlapFD, -3, 3, -3, 3, minAlt, maxAlt, distanceFromTarget)
 
         #Write ground waypoints to txt file
         thefile = open('rightSideWayPoints.txt', 'w')
