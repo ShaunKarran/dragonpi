@@ -339,7 +339,7 @@ def main():
 
 
 	    #Generate wall search points
-        rightSideWayPoints,  bottomSideWayPoints, leftSideWayPoints, topSideWayPoints = generateWallWaypoints(lenFD, lenAD, overlapAD, overlapFD, -3, 3, -3, 3, minAlt, maxAlt, distanceFromTarget)
+        rightSideWayPoints,  bottomSideWayPoints, leftSideWayPoints, topSideWayPoints = generateWallWaypoints(lenFD, lenAD, overlapAD, overlapFD, minX, maxX, minY, maxY, minAlt, maxAlt, distanceFromTarget)
 
         #Write ground waypoints to txt file
         thefile = open('rightSideWayPoints.txt', 'w')
